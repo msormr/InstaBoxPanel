@@ -1,0 +1,21 @@
+name: 自动同步上游代码
+on:
+  schedule:
+    - cron: '0 19 * * *' # 每天 UTC 0点自动同步，可按需修改
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main # 根据你的默认分支调整
+      - name: Sync with Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          target_sync_branch: main # 你要同步的目标分支
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }} # 自动提供的令牌
+          upstream_sync_branch: main # 上游仓库的分支，通常也是 main
+          upstream_sync_repo: meicuode/InstaBoxPanel # 上游仓库路径
+          test_mode: false # 设为 true 可仅测试而不实际推送
